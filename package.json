@@ -1,0 +1,17 @@
+{
+  "name": "bull-horse-time",
+  "version": "1.0.0",
+  "description": "工时统计小工具",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Harry Sun",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^30.0.4"
+  },
+  "devDependencies": {
+    "electron-reloader": "^1.2.3"
+  }
+}

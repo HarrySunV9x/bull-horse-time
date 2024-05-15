@@ -1,0 +1,74 @@
+body {
+    -webkit-app-region: drag;
+}
+
+button {
+    -webkit-app-region: no-drag;
+    background: none;
+    border: none;
+}
+
+.titlebar {
+     -webkit-user-select: none;
+     -webkit-app-region: drag;
+ }
+
+#logoContain {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+}
+#logoImg {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+#today {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 200px;
+}
+
+#startTime{
+    flex: 1;
+    height: 30%;
+}
+#endTime{
+    flex: 1;
+    height: 30%;
+}
+#wortTime{
+    flex: 1;
+    height: 30%;
+}
+#timeButtonContain{
+    flex: 1;
+    height: 50px;
+    width: 50px;
+}
+#clickImg{
+    max-width: 100%;
+    height: auto;
+    border-radius: 50%;
+}
+
+#history {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    height: 180px;
+    font-size: 0.8rem;
+}
+table {
+    border-collapse: collapse;
+}
+th, td {
+    border: 2px solid #000; /* 添加粗黑边框 */
+    padding: 8px;
+    text-align: center;
+}
