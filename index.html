@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <meta
             http-equiv="Content-Security-Policy"
             content="default-src 'self'; script-src 'self'"
@@ -15,50 +15,32 @@
     <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 <body>
-<br/>
-<div id="logoContain">
-    <img id="logoImg" src="public/logo.jpg" alt="logo">
-</div>
-<div id="today">
-    <div id="startTime"></div>
-    <div id="endTime"></div>
-    <div id="wortTime"></div>
-    <div id="timeButtonContain">
-        <button id="timeButton">
-            <img id="clickImg" src="public/click.jpg" alt="click">
-        </button>
+    <br/>
+    <div id="logoContain">
+        <img id="logoImg" src="public/logo.jpg" alt="logo">
     </div>
-</div>
-<div id="history">
-    <table>
-        <tbody>
-        <tr>
-            <td>2024-05-15</td>
-            <td>16:16:16</td>
-            <td>16:16:16</td>
-            <td>0.000</td>
-        </tr>
-        <tr>
-            <td>2024-05-15</td>
-            <td>16:16:16</td>
-            <td>16:16:16</td>
-            <td>0.000</td>
-        </tr>
-        <tr>
-            <td>2024-05-15</td>
-            <td>16:16:16</td>
-            <td>16:16:16</td>
-            <td>0.000</td>
-        </tr>
-        <tr>
-            <td>2024-05-15</td>
-            <td>16:16:16</td>
-            <td>16:16:16</td>
-            <td>0.000</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <div id="today">
+        <div id="todayTime">
+            <div id="startTime"></div>
+            <br>
+            <div id="endTime"></div>
+        </div>
+
+        <div id="timeButtonContain">
+            <button id="timeButton">
+                <img id="clickImg" src="public/click.jpg" alt="click">
+            </button>
+        </div>
+    </div>
+    <div id="history">
+        <table>
+        </table>
+    </div>
+    <div id="sumTime">
+        <div>
+            您本月耕作了 <span id="sumTimeValue"></span> 小时
+        </div>
+    </div>
 
 </body>
 

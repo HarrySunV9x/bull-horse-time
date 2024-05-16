@@ -4,14 +4,43 @@
   "description": "工时统计小工具",
   "main": "index.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron . --no-reload",
+    "build": "electron-builder"
   },
   "author": "Harry Sun",
   "license": "ISC",
-  "dependencies": {
-    "electron": "^30.0.4"
-  },
   "devDependencies": {
+    "electron": "^30.0.4",
+    "electron-builder": "^24.13.3",
     "electron-reloader": "^1.2.3"
+  },
+  "electron-reloader": {
+    "ignore": [
+      "data.json"
+    ]
+  },
+  "build": {
+    "productName": "bull-horse-time",
+    "appId": "com.harry.bullHorseTime",
+    "copyright": "harry sun",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis"
+        }
+      ],
+      "artifactName": "${productName}-setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "bullHorseTime"
+    }
   }
 }
