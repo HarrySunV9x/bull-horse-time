@@ -1,6 +1,10 @@
-const {app, BrowserWindow, ipcMain} = require('electron/main')
+const {Tray, Menu, app, BrowserWindow, ipcMain, ipcRenderer, powerMonitor} = require('electron/main')
 const path = require('path');
 const fs = require('fs');
+
+let win = null;
+let tray = null;
+let isQuiting = false;
 
 const userDataPath = app.getPath('userData');
 try {
@@ -8,7 +12,7 @@ try {
 } catch (_) {
 }
 const createWindow = () => {
-    const win = new BrowserWindow({
+    win = new BrowserWindow({
         width: 350,
         height: 600,
         webPreferences: {
@@ -23,6 +27,41 @@ const createWindow = () => {
     })
 
     win.loadFile('index.html')
+
+    win.webContents.on('dom-ready', () => {
+        // 设置 powerMonitor 监听器
+        powerMonitor.on('lock-screen', () => {
+            win.webContents.send('screen-locked');
+        });
+
+        powerMonitor.on('unlock-screen', () => {
+            win.webContents.send('screen-locked');
+        });
+    });
+
+    // 系统托盘图标设置
+    tray = new Tray(path.join(__dirname, './public/logo.jpg')); // 确保你的图标路径正确
+    const contextMenu = Menu.buildFromTemplate([
+        { label: '显示', click: () => { win.show(); } },
+        { label: '退出', click: () => {
+                isQuiting = true;
+                app.quit();
+            } }
+    ]);
+    tray.setToolTip('bull-horse-time');
+    tray.setContextMenu(contextMenu);
+
+    tray.on('click', () => {
+        win.isVisible() ? win.hide() : win.show();
+    });
+
+    win.on('close', (event) => {
+        if (!isQuiting) {
+            event.preventDefault();
+            win.hide();
+        }
+        return false;
+    });
 }
 
 app.whenReady().then(() => {
@@ -33,12 +72,12 @@ app.whenReady().then(() => {
             createWindow()
         }
     })
-})
 
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
+    app.setLoginItemSettings({
+        openAtLogin: true,  // 开机启动
+        path: app.getPath('exe'),
+        args: ['--hidden']  // 可选参数，表示启动时隐藏窗口
+    });
 })
 
 function getWorkTime(startTime, endTime) {
@@ -83,3 +122,4 @@ ipcMain.handle('get_data', (event) => {
     const existingData = fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath)) : [];
     return existingData;
 });
+

@@ -35,35 +35,29 @@ function flushHistory() {
     });
 }
 
-function getHistory() {
-    window.electronAPI.getData().then(data => {
+async function getHistory() {
+    try {
+        const data = await window.electronAPI.getData();
         const index = data.findIndex(entry => entry.date === `${year}-${month}-${day}`);
+        if (index === -1) {
+            oneDayStartLocaleTimeString = null;
+            oneDayEndLocaleTimeString = null;
+            document.getElementById('startTime').innerText = "";
+            document.getElementById('endTime').innerText = "";
+            return;
+        }
         oneDayStartLocaleTimeString = data[index].startTime;
         oneDayEndLocaleTimeString = data[index].endTime;
         document.getElementById('startTime').innerText = "您戴上耕具的时间：\n" + oneDayStartLocaleTimeString;
         document.getElementById('endTime').innerText = "您回到棚子的时间：\n" + oneDayEndLocaleTimeString;
-    }).catch(error => {
-        // 处理错误
+    } catch (error) {
         console.error('获取数据时出错：', error);
-    });
+    }
 }
 
 getHistory()
 getSumTime()
-document.querySelector('#timeButton').addEventListener('click', () => {
-    if (!oneDayStartLocaleTimeString) {
-        oneDayStart = new Date();
-        document.getElementById('startTime').innerText = "您戴上耕具的时间：\n" + oneDayStart.toLocaleTimeString();
-        window.electronAPI.generateData(`${year}-${month}-${day}`, oneDayStart.toLocaleTimeString(), '');
-        oneDayStartLocaleTimeString = oneDayStart.toLocaleTimeString()
-    } else {
-        oneDayEnd = new Date();
-        document.getElementById('endTime').innerText = "您回到棚子的时间：\n" + oneDayEnd.toLocaleTimeString();
-        window.electronAPI.generateData(`${year}-${month}-${day}`, oneDayStartLocaleTimeString, oneDayEnd.toLocaleTimeString());
-        flushHistory()
-        getSumTime()
-    }
-});
+document.querySelector('#timeButton').addEventListener('click', clickFunction);
 
 function getSumTime() {
     // 假设现在是2024年5月
@@ -88,4 +82,24 @@ function getSumTime() {
         // 处理错误
         console.error('获取数据时出错：', error);
     });
+}
+
+window.electronAPI.screenLock(()=>{
+    clickFunction()
+})
+
+async function clickFunction() {
+    await getHistory(); // 等待 getHistory 执行完成
+    if (!oneDayStartLocaleTimeString) {
+        oneDayStart = new Date();
+        document.getElementById('startTime').innerText = "您戴上耕具的时间：\n" + oneDayStart.toLocaleTimeString();
+        window.electronAPI.generateData(`${year}-${month}-${day}`, oneDayStart.toLocaleTimeString(), '');
+        oneDayStartLocaleTimeString = oneDayStart.toLocaleTimeString();
+    } else {
+        oneDayEnd = new Date();
+        document.getElementById('endTime').innerText = "您回到棚子的时间：\n" + oneDayEnd.toLocaleTimeString();
+        window.electronAPI.generateData(`${year}-${month}-${day}`, oneDayStartLocaleTimeString, oneDayEnd.toLocaleTimeString());
+        flushHistory();
+        getSumTime();
+    }
 }
