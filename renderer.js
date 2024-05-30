@@ -1,16 +1,12 @@
-let oneDayDate;
-let oneDayStart, oneDayStartLocaleTimeString;
-let oneDayEnd, oneDayEndLocaleTimeString;
+let today;
+let todayStart;
+let todayEnd;
 
-oneDayDate = new Date();
-const year = oneDayDate.getFullYear();
-const month = String(oneDayDate.getMonth() + 1).padStart(2, '0'); // 补0
-const day = String(oneDayDate.getDate()).padStart(2, '0'); // 补0
-
-flushHistory()
-
-function getOneDayWorkTime(start, end) {
-    return Math.floor((end - start) / (1000 * 60 * 60));
+function getTodayYMD(){
+    let year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    let day = today.getDate();
+    return `${year}-${month}-${day}`
 }
 
 function flushHistory() {
@@ -35,29 +31,32 @@ function flushHistory() {
     });
 }
 
-async function getHistory() {
-    try {
-        const data = await window.electronAPI.getData();
-        const index = data.findIndex(entry => entry.date === `${year}-${month}-${day}`);
-        if (index === -1) {
-            oneDayStartLocaleTimeString = null;
-            oneDayEndLocaleTimeString = null;
-            document.getElementById('startTime').innerText = "";
-            document.getElementById('endTime').innerText = "";
-            return;
-        }
-        oneDayStartLocaleTimeString = data[index].startTime;
-        oneDayEndLocaleTimeString = data[index].endTime;
-        document.getElementById('startTime').innerText = "您戴上耕具的时间：\n" + oneDayStartLocaleTimeString;
-        document.getElementById('endTime').innerText = "您回到棚子的时间：\n" + oneDayEndLocaleTimeString;
-    } catch (error) {
-        console.error('获取数据时出错：', error);
+function getLastClick(){
+    if (!today) {
+        today = new Date();
     }
+    window.electronAPI.getData().then(data => {
+        // 在这里处理返回的数据
+        let lastClick = data[0];
+        if (lastClick.date === getTodayYMD()) {
+            if(lastClick.startTime){
+                todayStart = lastClick.startTime;
+            }
+            if(lastClick.endTime){
+                todayEnd = lastClick.endTime;
+            }
+            if(todayStart){
+                document.getElementById('startTime').innerText = "您戴上耕具的时间：\n" + todayStart;
+            }
+            if(todayEnd){
+                document.getElementById('endTime').innerText = "您回到棚子的时间：\n" + todayEnd;
+            }
+        }
+    }).catch(error => {
+        // 处理错误
+        console.error('获取数据时出错：', error);
+    });
 }
-
-getHistory()
-getSumTime()
-document.querySelector('#timeButton').addEventListener('click', clickFunction);
 
 function getSumTime() {
     // 假设现在是2024年5月
@@ -88,18 +87,38 @@ window.electronAPI.screenLock(()=>{
     clickFunction()
 })
 
+function istoday(){
+    let tmpData = new Date();
+    if( today &&
+        today.getFullYear() === tmpData.getFullYear() &&
+        today.getMonth() === tmpData.getMonth() &&
+        today.getDate() === tmpData.getDate()){
+    }
+    else{
+        today = tmpData;
+        todayStart = null;
+        todayEnd = null;
+    }
+}
+
 async function clickFunction() {
-    await getHistory(); // 等待 getHistory 执行完成
-    if (!oneDayStartLocaleTimeString) {
-        oneDayStart = new Date();
-        document.getElementById('startTime').innerText = "您戴上耕具的时间：\n" + oneDayStart.toLocaleTimeString();
-        window.electronAPI.generateData(`${year}-${month}-${day}`, oneDayStart.toLocaleTimeString(), '');
-        oneDayStartLocaleTimeString = oneDayStart.toLocaleTimeString();
+    istoday();
+    if (!todayStart) {
+        todayStart = new Date();
+        todayStart = todayStart.toLocaleTimeString();
+        document.getElementById('startTime').innerText = "您戴上耕具的时间：\n" + todayStart;
+        window.electronAPI.generateData(getTodayYMD(), todayStart, '');
     } else {
-        oneDayEnd = new Date();
-        document.getElementById('endTime').innerText = "您回到棚子的时间：\n" + oneDayEnd.toLocaleTimeString();
-        window.electronAPI.generateData(`${year}-${month}-${day}`, oneDayStartLocaleTimeString, oneDayEnd.toLocaleTimeString());
+        todayEnd = new Date();
+        todayEnd = todayEnd.toLocaleTimeString();
+        document.getElementById('endTime').innerText = "您回到棚子的时间：\n" + todayEnd;
+        window.electronAPI.generateData(getTodayYMD(), todayStart, todayEnd);
         flushHistory();
         getSumTime();
     }
 }
+
+flushHistory()
+getLastClick()
+getSumTime()
+document.querySelector('#timeButton').addEventListener('click', clickFunction);

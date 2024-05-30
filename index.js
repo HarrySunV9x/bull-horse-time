@@ -81,12 +81,29 @@ app.whenReady().then(() => {
 })
 
 function getWorkTime(startTime, endTime) {
+    let notWorkTime = [["12:00:00", "13:30:00"], ["17:30:00", "18:00:00"]];
     const startDate = new Date("2000-01-01 " + startTime);
     const endDate = new Date("2000-01-01 " + endTime);
 
-    const timeDiff = endDate - startDate;
+    let timeDiff = endDate - startDate;
 
-    return (timeDiff / (1000 * 60 * 60)).toFixed(3)
+    notWorkTime.forEach(period => {
+        const periodStart = new Date("2000-01-01 " + period[0]);
+        const periodEnd = new Date("2000-01-01 " + period[1]);
+
+        // If the work period overlaps with the notWorkTime period, subtract the overlap
+        if (startDate < periodEnd && endDate > periodStart) {
+            const overlapStart = new Date(Math.max(startDate, periodStart));
+            const overlapEnd = new Date(Math.min(endDate, periodEnd));
+            const overlap = overlapEnd - overlapStart;
+
+            if (overlap > 0) {
+                timeDiff -= overlap;
+            }
+        }
+    });
+
+    return (timeDiff / (1000 * 60 * 60)).toFixed(3);
 }
 
 // 处理生成数据事件
