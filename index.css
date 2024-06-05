@@ -36,7 +36,7 @@ button {
 }
 
 #todayTime{
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 #startTime {
@@ -68,10 +68,23 @@ button {
     border-radius: 50%;
 }
 
+#modifyRestTime {
+    display: flex;
+    justify-content: center;
+    margin-left: -28px
+}
+
+#modifyRestTimeFlex{
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+    font-size: 0.8em;
+}
+
 #history {
     display: flex;
     justify-content: center;
-    margin-top: 50px;
+    margin-top: 10px;
     height: 160px;
     font-size: 0.8rem;
 }
@@ -88,6 +101,10 @@ th, td {
 }
 
 #sumTime {
+    margin-top: 0px;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 64px;
+    gap: 8px;
 }

@@ -32,13 +32,32 @@
             </button>
         </div>
     </div>
+    <div id="modifyRestTime">
+        <div  id="modifyRestTimeFlex">
+            <div>休息时间：</div>
+            <div>
+                <button id="time1" class="restTime">12:00:00</button> -
+                <button id="time2" class="restTime">13:30:00</button>
+            </div>
+            <div>
+                <button id="time3" class="restTime">17:30:00</button> -
+                <button id="time4" class="restTime">18:00:00</button>
+            </div>
+        </div>
+    </div>
     <div id="history">
         <table>
         </table>
     </div>
     <div id="sumTime">
         <div>
+            您本月应耕作 <span id="shouldTimeValue"></span> 小时
+        </div>
+        <div>
             您本月耕作了 <span id="sumTimeValue"></span> 小时
+        </div>
+        <div>
+            超越了 <span id="overTimeValue"></span> 小时
         </div>
     </div>
 
